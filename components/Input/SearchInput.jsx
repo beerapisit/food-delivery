@@ -1,15 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 import IconSearch from "../Icons/IconSearch";
 
-const SearchInput = () => {
+const SearchInput = ({ onChange }) => {
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearch(value);
+  };
+
+  useEffect(() => {
+    if (!onChange && typeof onChange !== "function") return () => null;
+
+    const timer = setTimeout(() => {
+      onChange(search);
+      clearTimeout(timer);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [search]);
+
   return (
     <>
       <div className="input-group">
         <div className="search-icon-first">
           <IconSearch />
         </div>
-        <input className="search-input" />
-        <div className="search-icon-last"><IconSearch /></div>
+        <input
+          className="search-input"
+          value={search}
+          onChange={handleSearch}
+        />
+        <div className="search-icon-last">
+          <IconSearch />
+        </div>
       </div>
       <style jsx>{`
         .input-group {
